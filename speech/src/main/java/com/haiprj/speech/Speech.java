@@ -1,5 +1,6 @@
 package com.haiprj.speech;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +28,7 @@ import java.util.*;
  */
 public class Speech {
 
+    private static final int RECORD_AUDIO_PERMISSION_REQUEST_CODE = 10310;
     private static Speech instance = null;
     protected static String GOOGLE_APP_PACKAGE = "com.google.android.googlequicksearchbox";
 
@@ -34,6 +36,7 @@ public class Speech {
 
     private TextToSpeechEngine textToSpeechEngine;
     private SpeechRecognitionEngine speechRecognitionEngine;
+    private Activity mActivity;
 
     private Speech(final Context context, final String callingPackage, TextToSpeech.OnInitListener onInitListener, SpeechRecognitionEngine speechRecognitionEngine, TextToSpeechEngine textToSpeechEngine) {
         mContext = context;
@@ -53,11 +56,11 @@ public class Speech {
      * @param context application context
      * @return speech instance
      */
-    public static Speech init(final Context context) {
+    public static Speech init(final Context context, final Activity activity) {
         if (instance == null) {
             instance = new Speech(context, null, new DummyOnInitListener(), new BaseSpeechRecognitionEngine(), new BaseTextToSpeechEngine());
         }
-
+        instance.mActivity = activity;
         return instance;
     }
 
@@ -75,27 +78,27 @@ public class Speech {
      *                       not overriding the calling package
      * @return speech instance
      */
-    public static Speech init(final Context context, final String callingPackage) {
+    public static Speech init(final Context context, final Activity activity, final String callingPackage) {
         if (instance == null) {
             instance = new Speech(context, callingPackage, new DummyOnInitListener(), new BaseSpeechRecognitionEngine(), new BaseTextToSpeechEngine());
         }
-
+        instance.mActivity = activity;
         return instance;
     }
 
-    public static Speech init(final Context context, final String callingPackage, TextToSpeech.OnInitListener onInitListener) {
+    public static Speech init(final Context context, final Activity activity, final String callingPackage, TextToSpeech.OnInitListener onInitListener) {
         if (instance == null) {
             instance = new Speech(context, callingPackage, onInitListener, new BaseSpeechRecognitionEngine(), new BaseTextToSpeechEngine());
         }
-
+        instance.mActivity = activity;
         return instance;
     }
 
-    public static Speech init(final Context context, final String callingPackage, TextToSpeech.OnInitListener onInitListener, SpeechRecognitionEngine speechRecognitionEngine, TextToSpeechEngine textToSpeechEngine) {
+    public static Speech init(final Context context, final Activity activity, final String callingPackage, TextToSpeech.OnInitListener onInitListener, SpeechRecognitionEngine speechRecognitionEngine, TextToSpeechEngine textToSpeechEngine) {
         if (instance == null) {
             instance = new Speech(context, callingPackage, onInitListener, speechRecognitionEngine, textToSpeechEngine);
         }
-
+        instance.mActivity = activity;
         return instance;
     }
 
@@ -144,7 +147,12 @@ public class Speech {
      */
     public void startListening(final SpeechProgressView progressView, final SpeechDelegate delegate)
             throws SpeechRecognitionNotAvailable, GoogleVoiceTypingDisabledException {
-
+        if (this.mActivity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            this.mActivity.requestPermissions(new String[]{
+                    Manifest.permission.RECORD_AUDIO
+            }, Speech.RECORD_AUDIO_PERMISSION_REQUEST_CODE);
+            return;
+        }
         speechRecognitionEngine.startListening(progressView, delegate);
     }
 

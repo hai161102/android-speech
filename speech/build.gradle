@@ -19,7 +19,7 @@ android {
 
     sourceSets.main {
         java.srcDirs "src/main"
-        manifest.srcFile "AndroidManifest.xml"
+        manifest.srcFile "src/AndroidManifest.xml"
     }
 
     buildTypes {
@@ -34,29 +34,26 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
-        warning 'InvalidPackage'
-    }
 }
 
 dependencies {
     // Testing - https://developer.android.com/training/testing/set-up-project
-    testImplementation "junit:junit:4.12"
+    testImplementation "junit:junit:4.13.2"
 
     // Core library
-    androidTestImplementation "androidx.test:core:1.0.0"
+    androidTestImplementation "androidx.test:core:1.6.1"
 
     // AndroidJUnitRunner and JUnit Rules
-    androidTestImplementation "androidx.test:runner:1.1.0"
-    androidTestImplementation "androidx.test:rules:1.1.0"
+    androidTestImplementation "androidx.test:runner:1.6.1"
+    androidTestImplementation "androidx.test:rules:1.6.1"
 
     // Assertions
-    androidTestImplementation "androidx.test.ext:junit:1.0.0"
-    androidTestImplementation "androidx.test.ext:truth:1.0.0"
-    androidTestImplementation "com.google.truth:truth:0.42"
+    androidTestImplementation "androidx.test.ext:junit:1.2.1"
+    androidTestImplementation "androidx.test.ext:truth:1.6.0"
+    androidTestImplementation "com.google.truth:truth:1.0"
 
     // Espresso dependencies
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
 }
 
 apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'
