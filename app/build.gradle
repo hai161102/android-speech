@@ -28,7 +28,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
+afterEvaluate {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.findByName('release')
+            }
+        }
+    }
+}
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
